@@ -1,0 +1,14 @@
+// 将 px 转成 rem
+@function px2rem($px) {
+  $root-font-size: 375px/10;
+  @return $px / $root-font-size + rem;
+}
+
+// 文本最多显示 $line 行
+@mixin text-line($line) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+}
