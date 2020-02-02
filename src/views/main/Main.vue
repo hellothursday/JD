@@ -1,56 +1,74 @@
 <template>
   <div class="main">
     <div class="wrapper" @scroll="onScroll" ref="mainWrapper">
-      <component :is="currentPage" :scroll-top="scrollTop"/>
+      <component :is="currentComponent" :scroll-top="scrollTop"/>
     </div>
-    <TabBar :data="tabBarList" @change="onTabBarChange"/>
+    <TabBar :data="tabBarList" :current="current" @change="onTabBarChange"/>
   </div>
 </template>
 
 <script>
   import TabBar from 'components/tab-bar'
 
+  const TAB_HOME = 0
+  const TAB_CART = 1
+  const TAB_MY = 2
+  const TAB_COMPONENTS = ['Home', 'Cart', 'My']
   export default {
     name: 'Main',
-    data () {
-      return {
-        currentPage: 'Home',
-        tabBarList: [
-          {
-            icon: require('./images/home-n.svg'),
-            activeIcon: require('./images/home-h.svg'),
-            title: '首页',
-            componentName: 'Home'
-          },
-          {
-            icon: require('./images/shopping-n.svg'),
-            activeIcon: require('./images/shopping-h.svg'),
-            title: '购物车',
-            componentName: 'Cart'
-          },
-          {
-            icon: require('./images/my-n.svg'),
-            activeIcon: require('./images/my-h.svg'),
-            title: '我的',
-            componentName: 'My'
-          }
-        ],
-        scrollTop: 0
-      }
-    },
     components: {
       TabBar,
       Home: () => import('pages/home'),
       Cart: () => import('pages/cart'),
       My: () => import('pages/my')
     },
+    data () {
+      return {
+        current: TAB_HOME,
+
+        tabBarList: [
+          {
+            // TAB_HOME
+            icon: require('./images/home-n.svg'),
+            activeIcon: require('./images/home-h.svg'),
+            title: '首页'
+          },
+          {
+            // TAB_CART
+            icon: require('./images/shopping-n.svg'),
+            activeIcon: require('./images/shopping-h.svg'),
+            title: '购物车'
+          },
+          {
+            // TAB_MY
+            icon: require('./images/my-n.svg'),
+            activeIcon: require('./images/my-h.svg'),
+            title: '我的'
+          }
+        ],
+        scrollTop: 0
+      }
+    },
+    computed: {
+      currentComponent () {
+        return TAB_COMPONENTS[this.current]
+      }
+    },
     activated () {
       // 保留当前页面的滚动值
       this.$refs.mainWrapper.scrollTop = this.scrollTop
+
+      /**
+       * 指定切换的tab
+       */
+      const tab = this.$route.params.tab
+      if (tab !== undefined && [TAB_HOME, TAB_CART, TAB_MY].indexOf(tab) !== -1) {
+        this.current = tab
+      }
     },
     methods: {
-      onTabBarChange (componentName) {
-        this.currentPage = componentName
+      onTabBarChange (index) {
+        this.current = index
       },
       onScroll (event) {
         this.scrollTop = event.target.scrollTop

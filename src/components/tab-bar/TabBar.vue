@@ -1,8 +1,8 @@
 <template>
   <ul class="tab-bar">
-    <li class="item" v-for="(item,index) in data" :key="index" @click="onChange(item, index)">
+    <li class="item" v-for="(item,index) in data" :key="index" @click="onChange(index)">
       <img class="icon" :src="icon(item,index)" :alt="item.title">
-      <p class="text" :class="{'active':index===current}">{{item.title}}</p>
+      <p class="text" :class="{'active':index===currentTab}">{{item.title}}</p>
     </li>
   </ul>
 </template>
@@ -16,23 +16,32 @@
         default () {
           return []
         }
+      },
+      current: {
+        type: Number,
+        default: 0
       }
     },
     data () {
       return {
-        current: 0
+        currentTab: this.current
       }
     },
     methods: {
       icon (item, index) {
-        return index === this.current ? item.activeIcon : item.icon
+        return index === this.currentTab ? item.activeIcon : item.icon
       },
-      onChange (item, index) {
-        if (index === this.current) {
+      onChange (index) {
+        if (index === this.currentTab) {
           return
         }
-        this.current = index
-        this.$emit('change', item.componentName)
+        this.currentTab = index
+        this.$emit('change', index)
+      }
+    },
+    watch: {
+      current (newValue) {
+        this.currentTab = newValue
       }
     }
   }

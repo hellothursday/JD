@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" ref="app">
     <transition :name="transitionName">
       <keep-alive :include="virtualTaskStack">
         <router-view/>
@@ -8,6 +8,10 @@
   </div>
 </template>
 <script>
+  import { animateCSS } from 'js/utils'
+  import EventBus from 'js/event-bus'
+  import storage from 'good-storage'
+
   export default {
     data () {
       return {
@@ -16,6 +20,17 @@
         virtualTaskStack: []
       }
     },
+    created () {
+      EventBus.$on('incomplete', () => {
+        animateCSS(this.$refs.app, 'shake')
+      })
+
+      const cartData = storage.get('cartData', [])
+      if (cartData) {
+        this.$store.commit('setCartData', cartData)
+      }
+    },
+    methods: {},
     watch: {
       // watch $route 决定使用哪种过渡
       '$route' (to, from) {
@@ -33,6 +48,13 @@
           // 后退
           this.virtualTaskStack.pop()
           this.transitionName = 'fold-right'
+        }
+
+        /**
+         * 初始化虚拟任务栈
+         */
+        if (to.params.clearTaskStack) {
+          this.virtualTaskStack = ['Main']
         }
         console.log('当前任务栈', this.virtualTaskStack)
       }

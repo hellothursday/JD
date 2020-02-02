@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 Vue.filter('formatPrice', function (price) {
   if (!price) {
-    return ''
+    return '0.00'
   }
 
   let result = parseFloat(price)

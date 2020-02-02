@@ -2,25 +2,25 @@
   <div class="home">
     <TopBar :show-back="false" :custom-style="topBarStyle">
       <template #left>
-        <img :src="topBarIcon.left">
+        <img :src="topBarIcon.left" @click="incomplete">
       </template>
       <template #center>
-        <Search :theme="searchTheme"/>
+        <Search :theme="searchTheme" @click.native="incomplete"/>
       </template>
       <template #right>
-        <img :src="topBarIcon.right">
+        <img :src="topBarIcon.right" @click="incomplete">
       </template>
     </TopBar>
     <Slide :data="slideList" :autoplay="true" :height="slideHeight" :style="slideStyle"/>
-    <Activity>
+    <Activity @click.native="incomplete">
       <div class="activity-520">
         <img v-for="item in activities" :src="item.icon" :key="item.id">
       </div>
     </Activity>
     <MallNav :data="mallList"/>
     <Spike v-if="spikeList.length" :data="spikeList"/>
-    <Activity>
-      <div class="activity-buy-together">
+    <Activity @click.native="incomplete">
+      <div class="activity-buy-together" v-if="activities.length">
         <img src="http://imooc.hybrid.lgdsunday.club/img/pinGouJie.a976e93f.gif" alt="拼购节">
       </div>
     </Activity>
@@ -36,6 +36,7 @@
   import MallNav from 'components/mall-nav'
   import Spike from 'components/spike'
   import GoodsList from 'components/goods-list'
+  import EventBus from 'js/event-bus'
 
   const ANCHOR_TOP = 140
   const LIGHT_ICONS = {
@@ -102,6 +103,9 @@
           this.spikeList = spike.data.list
           this.goodsList = goods.data.list
         }))
+      },
+      incomplete () {
+        EventBus.$emit('incomplete')
       }
     },
     watch: {

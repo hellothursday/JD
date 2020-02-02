@@ -79,8 +79,10 @@
         this.$router.push({
           name: 'GoodsDetail',
           params: {
-            routerType: 'push',
-            goods: item
+            routerType: 'push'
+          },
+          query: {
+            goodsid: item.id
           }
         })
       },

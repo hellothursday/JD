@@ -1,5 +1,5 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <div class="goods-detail" @scroll="onScroll">
+  <div class="goods-detail" @scroll="onScroll" ref="goodsDetail">
     <TopBar :show-back="false" :custom-style="topBarStyle" @left-click="back">
       <template #left>
         <div class="back">
@@ -19,7 +19,7 @@
         <span class="text">{{goods.name}}</span>
       </h2>
       <div class="wrapper">
-        <div class="choose">
+        <div class="choose" @click="incomplete">
           <span class="chosen">已选</span>
           <p class="sku">{{goods.name}}</p>
         </div>
@@ -36,20 +36,20 @@
       </ul>
     </div>
     <div class="bottom-bar">
-      <div class="icon-btn dong">
+      <div class="icon-btn dong" @click="incomplete">
         <img class="icon" src="./images/dong.png">
         <span class="text">联系客服</span>
       </div>
-      <div class="icon-btn shop">
+      <div class="icon-btn shop" @click="incomplete">
         <img class="icon" src="./images/shop.png">
         <span class="text">进店</span>
       </div>
-      <div class="icon-btn cart">
+      <div class="icon-btn cart" @click="goToCart">
         <img class="icon" src="./images/cart.png">
         <span class="text">购物车</span>
       </div>
-      <div class="add-cart">加入购物车</div>
-      <div class="buy-now">立即购买</div>
+      <div class="add-cart" @click="addToCart">加入购物车</div>
+      <div class="buy-now" @click="buy">立即购买</div>
     </div>
   </div>
 </template>
@@ -58,6 +58,7 @@
   import TopBar from 'components/top-bar'
   import Slide from 'components/slide'
   import Direct from 'components/direct'
+  import EventBus from 'js/event-bus'
 
   const ANCHOR_TOP = 320
   export default {
@@ -86,33 +87,71 @@
         },
         slideList: [],
         goods: {},
-        supports: ['可配送海外', '京东发货&售后', '京准达', '211限时达', '可自提', '不可使用优惠券']
+        supports: ['可配送海外', '京东发货&售后', '京准达', '211限时达', '可自提', '不可使用优惠券'],
+        scrollTop: 0
       }
     },
     created () {
       this.initData()
     },
+    activated () {
+      this.$refs.goodsDetail.scrollTop = this.scrollTop
+    },
     methods: {
       initData () {
-        const goods = this.$route.params.goods
-        const list = []
-        goods.swiperImgs.forEach((item, index) => {
-          list.push({
-            id: index,
-            icon: item
+        this.$http.get('/detail', {
+          params: {
+            goodsid: this.$route.query.goodsid
+          }
+        }).then(res => {
+          const goods = res.data.goods
+          const list = []
+          goods.swiperImgs.forEach((item, index) => {
+            list.push({
+              id: index,
+              icon: item
+            })
           })
+          this.slideList = list
+          this.goods = goods
         })
-        this.slideList = list
-        this.goods = goods
       },
       back () {
         this.$router.go(-1)
+      },
+      buy () {
+        this.$router.push({
+          name: 'Buy',
+          params: {
+            routerType: 'push'
+          },
+          query: {
+            goodsid: this.goods.id
+          }
+        })
+      },
+      addToCart () {
+        alert('加入购物车成功')
+        this.$store.commit('addToCart', this.goods)
+        // this.goToCart()
+      },
+      goToCart () {
+        const TAB_CART = 1 // 购物车页面
+        this.$router.push({
+          name: 'Main',
+          params: {
+            routerType: 'push',
+            tab: TAB_CART,
+            clearTaskStack: true
+          }
+        })
       },
       onScroll (event) {
         const scrollTop = event.target.scrollTop
         if (scrollTop < 0) {
           return
         }
+        this.scrollTop = scrollTop
         let opacity = scrollTop / ANCHOR_TOP
         if (opacity >= 1) {
           opacity = 1
@@ -126,6 +165,9 @@
         this.backIconStyles[1].opacity = opacity
 
         this.slideStyle.transform = `translate3d(0, ${scrollTop / 2}px, 0)`
+      },
+      incomplete () {
+        EventBus.$emit('incomplete')
       }
     }
   }

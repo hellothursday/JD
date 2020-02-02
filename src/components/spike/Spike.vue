@@ -4,7 +4,7 @@
     <CountDown :end-hour="13"/>
     <div class="list-wrapper">
       <ul class="spike-list">
-        <li class="item" v-for="item in data" :key="item.id">
+        <li class="item" v-for="item in data" :key="item.id" @click="incomplete">
           <img class="image" :src="item.img">
           <p class="price">￥{{item.price | formatPrice}}</p>
           <p class="old-price">￥{{item.oldPrice | formatPrice}}</p>
@@ -16,6 +16,7 @@
 
 <script>
   import CountDown from 'components/count-down'
+  import EventBus from 'js/event-bus'
 
   export default {
     name: 'Spike',
@@ -29,6 +30,11 @@
         default () {
           return []
         }
+      }
+    },
+    methods: {
+      incomplete () {
+        EventBus.$emit('incomplete')
       }
     }
   }
