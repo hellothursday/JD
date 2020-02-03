@@ -21,7 +21,7 @@
 <script>
   import Direct from 'components/direct'
   import NoStock from 'components/no-stock'
-  import { px2rem } from 'js/utils'
+  // import { px2rem } from 'js/utils'
 
   const MAX_IMG_HEIGHT = 200
   const MIN_IMG_HEIGHT = 160
@@ -91,7 +91,7 @@
       */
       initImgStyles () {
         this.data.forEach(() => {
-          let height = px2rem(this.imgHeight())
+          let height = this.imgHeight() + 'px'
           this.imgStyles.push({ height })
         })
       },
@@ -112,20 +112,20 @@
           if (leftTotalHeight <= rightTotalHeight) {
             goodsItemStyle = {
               left: '0',
-              top: px2rem(leftTotalHeight)
+              top: leftTotalHeight + 'px'
             }
             leftTotalHeight += elHeight
           } else {
             goodsItemStyle = {
               right: '0',
-              top: px2rem(rightTotalHeight)
+              top: rightTotalHeight + 'px'
             }
             rightTotalHeight += elHeight
           }
           itemStyles.push(goodsItemStyle)
         })
         this.listItemStyles = itemStyles
-        this.goodsListHeight = leftTotalHeight > rightTotalHeight ? px2rem(leftTotalHeight + 3) : px2rem(rightTotalHeight + 3)
+        this.goodsListHeight = leftTotalHeight > rightTotalHeight ? (leftTotalHeight + 3) + 'px' : (rightTotalHeight + 3) + 'px'
       },
       /*
       * 返回随机的图片高度
@@ -137,6 +137,7 @@
       fluidize () {
         this.zeroingWaterfallStyle()
         this.initImgStyles()
+        console.log('aaa', this.imgStyles)
         this.$nextTick(() => {
           this.initWaterfall()
         })

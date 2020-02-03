@@ -78,7 +78,7 @@
     .content {
       position: absolute;
       width: 100%;
-      top: px2rem(45px);
+      top: px2rem(67px);
       bottom: 0;
       overflow: hidden;
       overflow-y: scroll;

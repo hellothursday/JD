@@ -1,6 +1,12 @@
+// 带单位
 function px2rem ($px) {
+  return p2r($px) + 'rem'
+}
+
+// 不带单位
+function p2r ($px) {
   const $rootFontSize = 375 / 10
-  return parseFloat($px) / $rootFontSize + 'rem'
+  return parseFloat($px) / $rootFontSize
 }
 
 function animateCSS (node, animationName, callback) {
@@ -44,6 +50,7 @@ function deepClone (obj = {}) {
 
 export {
   px2rem,
+  p2r,
   animateCSS,
   deepClone
 }

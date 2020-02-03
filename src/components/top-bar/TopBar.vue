@@ -55,6 +55,8 @@
     display: flex;
     justify-content: space-between;
     z-index: 99;
+    // 适应沉浸式手机statusbar
+    padding-top: $status-bar-height;
 
     &.bottom-line {
       border-bottom: 1px solid $line-color;

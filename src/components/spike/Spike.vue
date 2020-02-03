@@ -58,7 +58,6 @@
     .list-wrapper {
       overflow: hidden;
       overflow-x: scroll;
-      -webkit-overflow-scrolling: touch;
     }
 
     .spike-list {

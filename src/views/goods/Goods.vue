@@ -104,7 +104,7 @@
     .list-wrapper {
       width: 100%;
       position: absolute;
-      top: px2rem(92px);
+      top: px2rem(114px);
       bottom: 0;
       overflow: hidden;
       overflow-y: scroll;

@@ -137,7 +137,7 @@
     .goods-list {
       width: 100%;
       position: absolute;
-      top: px2rem(45px);
+      top: px2rem(67px);
       left: 0;
       bottom: 0;
       overflow: hidden;
